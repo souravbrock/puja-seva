@@ -32,7 +32,7 @@ return [
     // cPanel > Email > Email Accounts. PHP mail() usually works without SMTP auth
     // on the same host; SMTP options below are used if mail() is disabled.
     'mail_from' => $env('GBPS_MAIL_FROM', 'noreply@gbps.reddevils.co.in'),
-    'mail_from_name' => $env('GBPS_MAIL_FROM_NAME', 'GBPS Puja Seva'),
+    'mail_from_name' => $env('GBPS_MAIL_FROM_NAME', 'Puja Seva'),
     'smtp_host' => $env('GBPS_SMTP_HOST', ''),
     'smtp_port' => (int) $env('GBPS_SMTP_PORT', '465'),
     'smtp_user' => $env('GBPS_SMTP_USER', ''),

@@ -6,6 +6,11 @@
 
 declare(strict_types=1);
 
+// Fixed reference timezone: all timestamps are written with PHP date() and
+// compared with strtotime()/time() in the same process model, so auth and
+// OTP expiry stay consistent regardless of php.ini / MySQL system zones.
+date_default_timezone_set('UTC');
+
 $configPath = __DIR__ . '/config.local.php';
 $config = require __DIR__ . '/config.php';
 if (is_file($configPath)) {
@@ -55,7 +60,17 @@ function db(array $config): PDO {
 }
 
 function bearer_token(): ?string {
-    $h = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+    // PHP-FPM on cPanel strips the Authorization header entirely, so the
+    // frontend also sends X-GBPS-Token (custom headers always arrive).
+    $t = $_SERVER['HTTP_X_GBPS_TOKEN'] ?? '';
+    if (is_string($t) && $t !== '') return $t;
+    // Standard header, with fallbacks for CGI/other SAPIs (.htaccess also
+    // passes it through where the SAPI allows).
+    $h = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
+    if ($h === '' && function_exists('apache_request_headers')) {
+        $heads = array_change_key_case((array) apache_request_headers(), CASE_LOWER);
+        $h = (string) ($heads['authorization'] ?? '');
+    }
     if (str_starts_with($h, 'Bearer ')) return substr($h, 7);
     return null;
 }
@@ -143,16 +158,27 @@ if ($resource === 'auth' && ($parts[1] ?? '') === 'request-otp' && $method === '
     $b = body();
     $email = strtolower(trim((string) ($b['email'] ?? '')));
     $name = trim((string) ($b['name'] ?? ''));
+    $phone = trim((string) ($b['phone'] ?? ''));
+    $address = trim((string) ($b['address'] ?? ''));
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) json_out(400, ['error' => 'Enter a valid email address']);
+    if ($phone !== '' && preg_match_all('/\d/', $phone) < 7) json_out(400, ['error' => 'Enter a valid phone number']);
     $code = (string) random_int(100000, 999999);
     $st = $pdo->prepare('INSERT INTO otp_codes (email, code_hash, expires_at) VALUES (?, ?, ?)');
     $st->execute([$email, hash('sha256', $code), date('Y-m-d H:i:s', time() + (int) $config['otp_ttl_seconds'])]);
-    // Ensure a users row exists (name filled on first verify if provided)
-    $st = $pdo->prepare('INSERT IGNORE INTO users (email, name) VALUES (?, ?)');
-    $st->execute([$email, $name !== '' ? $name : explode('@', $email)[0]]);
+    // Ensure a users row exists; fill empty name/phone/address only (never overwrite).
+    $st = $pdo->prepare('INSERT IGNORE INTO users (email, name, phone, address) VALUES (?, ?, ?, ?)');
+    $st->execute([$email, $name !== '' ? $name : explode('@', $email)[0], $phone, $address]);
     if ($name !== '') {
         $st = $pdo->prepare('UPDATE users SET name = ? WHERE email = ? AND (name IS NULL OR name = "")');
         $st->execute([$name, $email]);
+    }
+    if ($phone !== '') {
+        $st = $pdo->prepare('UPDATE users SET phone = ? WHERE email = ? AND (phone IS NULL OR phone = "")');
+        $st->execute([$phone, $email]);
+    }
+    if ($address !== '') {
+        $st = $pdo->prepare('UPDATE users SET address = ? WHERE email = ? AND (address IS NULL OR address = "")');
+        $st->execute([$address, $email]);
     }
     send_otp_mail($config, $email, $code);
     $out = ['ok' => true];
@@ -183,6 +209,33 @@ if ($resource === 'auth' && ($parts[1] ?? '') === 'verify-otp' && $method === 'P
     $st->execute([$email]);
     $user = $st->fetch();
     if (!$user) json_out(500, ['error' => 'Account error']);
+    // Customer registration completes here: ensure a profile row exists so the
+    // app never has to create one afterwards. Fill empty fields only.
+    $st = $pdo->prepare('SELECT * FROM profiles WHERE user_id = ? LIMIT 1');
+    $st->execute([$user['id']]);
+    $profile = $st->fetch();
+    $isAdmin = in_array(strtolower((string) $user['email']), array_map('strtolower', (array) ($config['admin_emails'] ?? [])), true);
+    if (!$profile) {
+        $pdo->prepare('INSERT INTO profiles (user_id, email, name, phone, role, gotra, address) VALUES (?, ?, ?, ?, ?, ?, ?)')
+            ->execute([$user['id'], $user['email'], $user['name'] ?? '', $user['phone'] ?? '', $isAdmin ? 'admin' : 'customer', '', $user['address'] ?? '']);
+    } else {
+        $patch = [];
+        $vals = [];
+        foreach (['name' => $user['name'] ?? '', 'phone' => $user['phone'] ?? '', 'address' => $user['address'] ?? ''] as $c => $v) {
+            if ($v !== '' && empty($profile[$c])) {
+                $patch[] = "`$c` = ?";
+                $vals[] = $v;
+            }
+        }
+        if ($isAdmin && ($profile['role'] ?? '') !== 'admin') {
+            $patch[] = '`role` = ?';
+            $vals[] = 'admin';
+        }
+        if ($patch) {
+            $vals[] = $profile['id'];
+            $pdo->prepare('UPDATE profiles SET ' . implode(',', $patch) . ' WHERE id = ?')->execute($vals);
+        }
+    }
     $token = bin2hex(random_bytes(32));
     $pdo->prepare('INSERT INTO sessions (user_id, token_hash, expires_at) VALUES (?, ?, ?)')
         ->execute([$user['id'], hash('sha256', $token), date('Y-m-d H:i:s', time() + (int) $config['session_ttl_seconds'])]);

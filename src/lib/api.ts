@@ -32,7 +32,12 @@ function url(path: string): string {
 async function request(path: string, method: string, body?: unknown) {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   const token = getToken();
-  if (token) headers['Authorization'] = `Bearer ${token}`;
+  if (token) {
+    // PHP-FPM on cPanel strips the Authorization header; X-GBPS-Token
+    // always arrives (verified). Send both, server accepts either.
+    headers['Authorization'] = `Bearer ${token}`;
+    headers['X-GBPS-Token'] = token;
+  }
   const res = await fetch(url(path), {
     method,
     headers,
@@ -55,8 +60,8 @@ export interface OtpUser {
   name: string;
 }
 
-export async function requestOtp(email: string, name?: string) {
-  return request('/api/auth/request-otp', 'POST', { email, name }) as Promise<{
+export async function requestOtp(email: string, name?: string, phone?: string, address?: string) {
+  return request('/api/auth/request-otp', 'POST', { email, name, phone, address }) as Promise<{
     ok: boolean;
     dev_otp?: string;
   }>;

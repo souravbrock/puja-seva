@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Flame, Mail, User, KeyRound, Phone } from 'lucide-react';
+import { Flame, Mail, User, KeyRound, Phone, MapPin } from 'lucide-react';
 import { requestOtp, verifyOtp } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, Field, Input, Btn } from '../components/ui';
@@ -13,6 +13,8 @@ export default function AuthPage() {
   const [step, setStep] = useState<Step>('email');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
@@ -34,9 +36,18 @@ export default function AuthPage() {
       setError('Enter a valid email address');
       return;
     }
+    if (phone.trim() !== '' && (phone.replace(/\D/g, '').length < 7)) {
+      setError('Enter a valid phone number');
+      return;
+    }
     setBusy(true);
     try {
-      const res = await requestOtp(email.trim(), name.trim() || undefined);
+      const res = await requestOtp(
+        email.trim(),
+        name.trim() || undefined,
+        phone.trim() || undefined,
+        address.trim() || undefined,
+      );
       setStep('otp');
       setInfo('We emailed you a 6-digit code. It expires in 10 minutes.');
       if (res.dev_otp) setDevOtp(res.dev_otp);
@@ -75,13 +86,14 @@ export default function AuthPage() {
           {step === 'email' ? 'Create Account / Sign In' : 'Enter Email Code'}
         </h1>
         <p className="text-sm text-stone-500 mt-1">
-          No passwords, no Google. Just your email + a one-time code.
+          Customer registration + sign-in in one step. New here? Fill the form
+          once — your account is created automatically. No passwords, no Google.
         </p>
       </div>
       <Card className="p-5 sm:p-6">
         {step === 'email' ? (
           <form onSubmit={sendOtp} className="space-y-3.5">
-            <Field label="Full name (for new accounts)">
+            <Field label="Full name">
               <div className="relative">
                 <User
                   size={17}
@@ -91,6 +103,21 @@ export default function AuthPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your name"
+                  className="pl-10"
+                />
+              </div>
+            </Field>
+            <Field label="Phone number">
+              <div className="relative">
+                <Phone
+                  size={17}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400"
+                />
+                <Input
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="10-digit mobile"
+                  inputMode="tel"
                   className="pl-10"
                 />
               </div>
@@ -106,6 +133,20 @@ export default function AuthPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   type="email"
+                  className="pl-10"
+                />
+              </div>
+            </Field>
+            <Field label="Address (optional)">
+              <div className="relative">
+                <MapPin
+                  size={17}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400"
+                />
+                <Input
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Delivery / puja address"
                   className="pl-10"
                 />
               </div>
@@ -189,6 +230,7 @@ export default function AuthPage() {
           <p>Admin: souravbrock@gmail.com</p>
         </div>
         <p className="text-center text-[13px] text-stone-500 mt-4 font-medium">
+          Customer registration is this form itself — no separate step.{' '}
           Are you a purohit?{' '}
           <Link to="/purohit/register" className="font-bold text-saffron-700">
             Register here

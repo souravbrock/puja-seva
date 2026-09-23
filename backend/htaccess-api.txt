@@ -1,6 +1,9 @@
 # Routed by Apache on cPanel shared hosting.
 <IfModule mod_rewrite.c>
 RewriteEngine On
+# cPanel/Apache drops the Authorization header under CGI/FastCGI —
+# pass it through or Bearer-token auth (/api/auth/me, writes) breaks.
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php?route=$1 [QSA,L]
