@@ -43,13 +43,21 @@ jobs:
       - run: npm run build
       # android/ platform is committed; just sync the fresh web build into it.
       - run: npx cap sync android
+      # Stable release signature (same key every run, so updates install cleanly).
+      - name: Decode signing key
+        run: echo "${{ secrets.GBPS_KEYSTORE_B64 }}" | base64 -d > android/release.keystore
       - working-directory: android
-        run: chmod +x gradlew && ./gradlew assembleDebug --no-daemon
-      - run: cp android/app/build/outputs/apk/debug/app-debug.apk gbps-app-debug.apk
+        env:
+          GBPS_KEYSTORE_FILE: release.keystore
+          GBPS_KEYSTORE_PASSWORD: ${{ secrets.GBPS_KEYSTORE_PASSWORD }}
+          GBPS_KEY_ALIAS: ${{ secrets.GBPS_KEY_ALIAS }}
+          GBPS_KEY_PASSWORD: ${{ secrets.GBPS_KEY_PASSWORD }}
+        run: chmod +x gradlew && ./gradlew assembleRelease --no-daemon
+      - run: cp android/app/build/outputs/apk/release/app-release.apk gbps-app-release.apk
       - uses: actions/upload-artifact@v4
         with:
           name: gbps-apk
-          path: gbps-app-debug.apk
+          path: gbps-app-release.apk
 
   github-release:
     runs-on: ubuntu-latest
@@ -60,11 +68,11 @@ jobs:
         with:
           path: artifacts
       - name: Checksums
-        run: (cd artifacts/gbps-web && sha256sum gbps-web.zip > ../SHA256SUMS.txt); (cd artifacts/gbps-apk && sha256sum gbps-app-debug.apk >> ../SHA256SUMS.txt); cat artifacts/SHA256SUMS.txt
+        run: (cd artifacts/gbps-web && sha256sum gbps-web.zip > ../SHA256SUMS.txt); (cd artifacts/gbps-apk && sha256sum gbps-app-release.apk >> ../SHA256SUMS.txt); cat artifacts/SHA256SUMS.txt
       - uses: softprops/action-gh-release@v2
         with:
           files: |
             artifacts/gbps-web/gbps-web.zip
-            artifacts/gbps-apk/gbps-app-debug.apk
+            artifacts/gbps-apk/gbps-app-release.apk
             artifacts/SHA256SUMS.txt
           generate_release_notes: true

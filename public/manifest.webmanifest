@@ -1,6 +1,6 @@
 {
-  "name": "GBPS Puja Seva",
-  "short_name": "GBPS",
+  "name": "Puja Seva",
+  "short_name": "Puja Seva",
   "description": "Book verified purohits, dashakarma samagri & complete puja packages.",
   "start_url": "/",
   "scope": "/",
@@ -8,6 +8,7 @@
   "background_color": "#fff8ef",
   "theme_color": "#5e1414",
   "icons": [
-    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    { "src": "/app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/app-icon-full.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
   ]
 }

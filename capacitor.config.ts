@@ -8,7 +8,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'in.co.reddevils.gbps',
-  appName: 'GBPS Puja Seva',
+  appName: 'Puja Seva',
   webDir: 'dist',
   server: {
     // Keep bundled offline-first; API base is compiled into the JS bundle.

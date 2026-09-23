@@ -7,10 +7,10 @@ Check the **latest release** before installing; all three sources below track th
 ## Option 1 — GitHub Releases (recommended)
 
 1. Open **https://github.com/souravbrock/puja-seva/releases/latest**
-2. Download **`gbps-app-debug.apk`** (Android) and optionally `gbps-web.zip` (web build).
+2. Download **`gbps-app-release.apk`** (Android) and optionally `gbps-web.zip` (web build).
 3. Verify checksum (optional but recommended):
    ```bash
-   sha256sum gbps-app-debug.apk
+   sha256sum gbps-app-release.apk
    # compare with SHA256SUMS.txt from the same release page
    ```
 4. On Android: allow “Install unknown apps” for your browser → open the APK → Install.
@@ -35,7 +35,7 @@ with id `in.co.reddevils.gbps` and the same filter.
 Status: **submission-ready, not yet published** in the official F-Droid repo.
 
 - Build recipe: `fdroid/metadata.yml` (builds `v1.0.0+` tags from source with
-  `npm ci && npm run build` + Capacitor/Gradle `assembleDebug`).
+  `npm ci && npm run build` + Capacitor/Gradle `assembleRelease`).
 - To publish: fork `fdroid/fdroiddata`, add the metadata, open a Merge Request.
 - Meanwhile, F-Droid users can install via **Option 1 or 2** — the APK is the same
   binary CI attaches to GitHub Releases.

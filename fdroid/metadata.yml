@@ -7,7 +7,7 @@ WebSite: https://gbps.reddevils.co.in
 SourceCode: https://github.com/souravbrock/puja-seva
 IssueTracker: https://github.com/souravbrock/puja-seva/issues
 
-AutoName: GBPS Puja Seva
+AutoName: Puja Seva
 Summary: Book purohits, samagri & puja packages (self-hosted)
 Description: |-
   GBPS Puja Seva — no Supabase, no Google login. Email OTP accounts,
@@ -19,9 +19,9 @@ RepoType: git
 Repo: https://github.com/souravbrock/puja-seva.git
 
 Builds:
-  - versionName: '1.0.3'
-    versionCode: 4
-    commit: v1.0.3
+  - versionName: '1.0.4'
+    versionCode: 5
+    commit: v1.0.4
     subdir: .
     gradle:
       - assembleDebug
@@ -33,5 +33,5 @@ Builds:
 
 AutoUpdateMode: Version v%v
 UpdateCheckMode: Tags
-CurrentVersion: '1.0.3'
-CurrentVersionCode: 4
+CurrentVersion: '1.0.4'
+CurrentVersionCode: 5
