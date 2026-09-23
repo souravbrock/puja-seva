@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Rozha+One&family=Mukta:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+@theme {
+  --font-display: "Rozha One", "Georgia", serif;
+  --font-body: "Mukta", "system-ui", sans-serif;
+  --color-maroon-50: #faf3f1;
+  --color-maroon-100: #f3e0dc;
+  --color-maroon-200: #e4bdb5;
+  --color-maroon-300: #d1948a;
+  --color-maroon-500: #b0483f;
+  --color-maroon-700: #7a1e1e;
+  --color-maroon-800: #5e1414;
+  --color-maroon-900: #450e0e;
+  --color-maroon-950: #2e0909;
+  --color-saffron-100: #ffedd5;
+  --color-saffron-200: #fed7aa;
+  --color-saffron-400: #fb923c;
+  --color-saffron-500: #f97316;
+  --color-saffron-600: #ea580c;
+  --color-saffron-700: #c2410c;
+  --color-saffron-800: #9a3412;
+  --color-gold-100: #faf0d3;
+  --color-gold-200: #f3e2a4;
+  --color-gold-300: #e9cd6f;
+  --color-gold-400: #ddb445;
+  --color-gold-500: #d9a821;
+  --color-gold-600: #b9860f;
+  --color-gold-700: #8f660a;
+  --color-cream: #fff8ef;
+}
+html { scroll-behavior: smooth; }
+body { background-color: var(--color-cream); -webkit-tap-highlight-color: transparent; }
+::selection { background: var(--color-saffron-200); }
+::-webkit-scrollbar { width: 8px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d8c3b8; border-radius: 99px; }
+input[type="datetime-local"] { min-height: 42px; }

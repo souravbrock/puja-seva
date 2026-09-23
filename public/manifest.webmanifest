@@ -1,0 +1,13 @@
+{
+  "name": "GBPS Puja Seva",
+  "short_name": "GBPS",
+  "description": "Book verified purohits, dashakarma samagri & complete puja packages.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fff8ef",
+  "theme_color": "#5e1414",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

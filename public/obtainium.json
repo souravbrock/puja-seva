@@ -1,0 +1,15 @@
+{
+  "id": "in.co.reddevils.gbps",
+  "name": "GBPS Puja Seva",
+  "author": "GBPS",
+  "homepage": "https://gbps.reddevils.co.in",
+  "sourceUrl": "https://github.com/souravbrock/puja-seva",
+  "apkFilterRegEx": "gbps-app-.*\\.apk",
+  "appId": "in.co.reddevils.gbps",
+  "versionDetection": {
+    "githubReleases": {
+      "repo": "souravbrock/puja-seva",
+      "includePrereleases": false
+    }
+  }
+}

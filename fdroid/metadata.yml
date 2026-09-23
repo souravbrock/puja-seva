@@ -1,0 +1,37 @@
+Categories:
+  - Lifestyle
+  - Religion
+License: MIT
+AuthorName: GBPS
+WebSite: https://gbps.reddevils.co.in
+SourceCode: https://github.com/souravbrock/puja-seva
+IssueTracker: https://github.com/souravbrock/puja-seva/issues
+
+AutoName: GBPS Puja Seva
+Summary: Book purohits, samagri & puja packages (self-hosted)
+Description: |-
+  GBPS Puja Seva — no Supabase, no Google login. Email OTP accounts,
+  data synced with your own hosting at gbps.reddevils.co.in (PHP + MySQL).
+  Book pujas, order dashakarma samagri, track bookings. Web + Android from
+  the same codebase.
+
+RepoType: git
+Repo: https://github.com/souravbrock/puja-seva.git
+
+Builds:
+  - versionName: '1.0.0'
+    versionCode: 1
+    commit: v1.0.0
+    subdir: .
+    gradle:
+      - assembleDebug
+    output: android/app/build/outputs/apk/debug/app-debug.apk
+    srclibs: []
+    prebuild:
+      - npm ci && npm run build
+      - npx cap sync android
+
+AutoUpdateMode: Version v%v
+UpdateCheckMode: Tags
+CurrentVersion: '1.0.0'
+CurrentVersionCode: 1
