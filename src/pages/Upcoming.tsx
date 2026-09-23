@@ -22,7 +22,7 @@ export default function UpcomingPage() {
             return (
               <Card key={u.id} className="overflow-hidden">
                 <div className="relative">
-                  <img src={u.image_url || '/images/havan.jpg'} alt={u.title} className="w-full h-48 sm:h-60 object-cover" />
+                  <img src={u.image_url || '/images/havan.svg'} alt={u.title} className="w-full h-48 sm:h-60 object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-maroon-950/90 via-maroon-950/25 to-transparent" />
                   <div className="absolute top-3 left-3 flex gap-2 flex-wrap">{isPast ? <Badge tone="neutral">Completed</Badge> : <Badge tone="gold">Booking open</Badge>}{name(u.purohit_id) && <Badge tone="maroon">By {name(u.purohit_id)}</Badge>}</div>
                   <div className="absolute bottom-0 inset-x-0 p-4"><h2 className="font-display text-2xl text-white">{u.title}</h2><p className="text-white/85 text-[13px] font-medium mt-1">{u.description}</p></div>

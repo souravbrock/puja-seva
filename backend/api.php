@@ -285,6 +285,29 @@ $table_for = [
 // Admin-only writes for catalogue; bookings/orders/profiles/purohits allow customer flows.
 $admin_write = ['pujas' => true, 'packages' => true, 'puja-lists' => true, 'items' => true, 'upcoming' => true];
 
+// PDO/MySQL returns JSON columns as strings; the app (like Supabase before)
+// expects real arrays. Decode on every read path, encode on every write path.
+$json_cols = [
+    'purohits' => ['pricing', 'photos'],
+    'puja_lists' => ['items'],
+    'dashakarma_items' => ['used_in_pujas'],
+    'orders' => ['items'],
+];
+
+function decode_json_row(string $table, $row) {
+    global $json_cols;
+    if (!is_array($row)) return $row;
+    foreach (($json_cols[$table] ?? []) as $c) {
+        if (isset($row[$c]) && is_string($row[$c])) {
+            $d = json_decode($row[$c], true);
+            $row[$c] = is_array($d) ? $d : [];
+        } elseif (!isset($row[$c])) {
+            $row[$c] = [];
+        }
+    }
+    return $row;
+}
+
 if (isset($table_for[$resource])) {
     $table = $table_for[$resource];
     $q = $_GET;
@@ -317,7 +340,8 @@ if (isset($table_for[$resource])) {
         try {
             $st = $pdo->prepare($sql);
             $st->execute($params);
-            json_out(200, $st->fetchAll());
+            $rows = array_map(static fn($r) => decode_json_row($table, $r), $st->fetchAll());
+            json_out(200, $rows);
         } catch (Throwable $e) {
             json_out(400, ['error' => 'Invalid filter for this resource']);
         }
@@ -373,7 +397,7 @@ if (isset($table_for[$resource])) {
         if ($resource === 'bookings' && !empty($b['upcoming_puja_id'])) {
             $pdo->prepare('UPDATE upcoming_pujas SET seats_booked = seats_booked + 1 WHERE id = ?')->execute([(int) $b['upcoming_puja_id']]);
         }
-        json_out(201, $row);
+        json_out(201, decode_json_row($table, $row));
     }
 
     if ($method === 'PUT') {
@@ -398,13 +422,13 @@ if (isset($table_for[$resource])) {
             $pdo->prepare("UPDATE `$table` SET " . implode(',', $sets) . ' WHERE id = ?')->execute($vals);
             $st = $pdo->prepare("SELECT * FROM `$table` WHERE id = ? LIMIT 1");
             $st->execute([$id]);
-            json_out(200, $st->fetch());
+            json_out(200, decode_json_row($table, $st->fetch()));
         } else {
             $vals[] = $user_id;
             $pdo->prepare("UPDATE `$table` SET " . implode(',', $sets) . ' WHERE user_id = ?')->execute($vals);
             $st = $pdo->prepare("SELECT * FROM `$table` WHERE user_id = ? LIMIT 1");
             $st->execute([$user_id]);
-            json_out(200, $st->fetch());
+            json_out(200, decode_json_row($table, $st->fetch()));
         }
     }
 

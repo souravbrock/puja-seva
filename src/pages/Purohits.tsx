@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Search, BadgeCheck, Award, BookOpen, Camera, Phone, MapPin, ChevronRight } from 'lucide-react';
+import { Search, BadgeCheck, Award, BookOpen, Camera, MapPin, ChevronRight } from 'lucide-react';
 import { apiGet, inr, initials } from '../lib/format';
 import { PageHeader } from '../components/layout';
 import { Card, Loader, EmptyState, Badge, Btn, Stars, SectionTitle } from '../components/ui';
@@ -67,7 +67,6 @@ export function PurohitDetailPage() {
         <div className="grid sm:grid-cols-2 gap-2 mt-4 text-sm">
           <div className="flex gap-2 items-start bg-cream rounded-xl p-3"><Award size={17} className="text-gold-600 shrink-0 mt-0.5" /><div><p className="text-[11px] font-bold uppercase tracking-wide text-stone-400">Certification</p><p className="font-semibold text-maroon-950">{p.certification || 'Traditional family parampara'}</p></div></div>
           <div className="flex gap-2 items-start bg-cream rounded-xl p-3"><BookOpen size={17} className="text-gold-600 shrink-0 mt-0.5" /><div><p className="text-[11px] font-bold uppercase tracking-wide text-stone-400">Specialization</p><p className="font-semibold text-maroon-950">{p.specialization}</p></div></div>
-          <div className="flex gap-2 items-start bg-cream rounded-xl p-3"><Phone size={17} className="text-gold-600 shrink-0 mt-0.5" /><div><p className="text-[11px] font-bold uppercase tracking-wide text-stone-400">Contact</p><p className="font-semibold text-maroon-950">{p.phone}</p></div></div>
           <div className="flex gap-2 items-start bg-cream rounded-xl p-3"><MapPin size={17} className="text-gold-600 shrink-0 mt-0.5" /><div><p className="text-[11px] font-bold uppercase tracking-wide text-stone-400">Serving</p><p className="font-semibold text-maroon-950">{p.address || 'Home visits available'}</p></div></div>
         </div>
       </Card>

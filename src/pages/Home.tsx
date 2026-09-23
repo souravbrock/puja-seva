@@ -29,11 +29,11 @@ export default function Home() {
   return (
     <div className="space-y-6">
       <motion.section {...fadeUp} className="relative overflow-hidden rounded-3xl bg-maroon-950 text-white">
-        <img src="/images/hero.jpg" alt="Puja thali" className="absolute inset-0 w-full h-full object-cover opacity-45" />
+        <img src="/images/hero.svg" alt="Puja thali" className="absolute inset-0 w-full h-full object-cover opacity-45" />
         <div className="absolute inset-0 bg-gradient-to-t from-maroon-950 via-maroon-950/60 to-maroon-950/20" />
         <div className="relative p-6 sm:p-10 max-w-2xl">
           <Badge tone="gold">Shubh Aarambh</Badge>
-          <h1 className="font-display text-3xl sm:text-5xl leading-tight mt-3">Book Trusted Purohits & Complete Dashakarma Kits</h1>
+          <h1 className="font-display text-3xl sm:text-5xl leading-tight mt-3 text-balance">Book Trusted Purohits & Complete Dashakarma Kits</h1>
           <p className="text-white/80 mt-3 text-sm sm:text-base">Verified purohits, authentic samagri, and all-inclusive puja packages delivered and performed at your home.</p>
           <div className="flex flex-wrap gap-2.5 mt-5">
             <Link to="/packages" className="inline-flex items-center gap-2 bg-saffron-500 hover:bg-saffron-600 text-white font-bold rounded-xl px-5 py-3 text-sm shadow-lg shadow-saffron-900/40">Book Puja Package <ArrowRight size={16} /></Link>
@@ -54,7 +54,7 @@ export default function Home() {
           <SectionTitle title="Upcoming Community Puja" subtitle="Reserve your seat before the countdown ends" action={<Link to="/upcoming" className="text-sm font-bold text-saffron-700 inline-flex items-center gap-1">View all <ChevronRight size={16} /></Link>} />
           <Card className="overflow-hidden">
             <div className="relative">
-              <img src={nextEvent.image_url || '/images/havan.jpg'} alt={nextEvent.title} className="w-full h-44 sm:h-56 object-cover" />
+              <img src={nextEvent.image_url || '/images/havan.svg'} alt={nextEvent.title} className="w-full h-44 sm:h-56 object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-maroon-950/90 via-maroon-950/30 to-transparent" />
               <div className="absolute bottom-0 inset-x-0 p-4 flex items-end justify-between gap-3">
                 <div><h3 className="font-display text-xl text-white">{nextEvent.title}</h3><p className="text-white/80 text-xs font-medium flex items-center gap-1 mt-1"><MapPin size={12} /> {nextEvent.venue} &middot; {fmtDateTime(nextEvent.event_date)}</p></div>
@@ -73,7 +73,7 @@ export default function Home() {
         <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4">
           {pujas.slice(0, 8).map((p) => (
             <Link key={p.id} to={`/pujas/${p.id}`} className="shrink-0 w-[240px] bg-white rounded-2xl border border-stone-200/70 overflow-hidden shadow-sm">
-              <img src={p.image_url || '/images/diya.jpg'} alt={p.name} className="w-full h-32 object-cover" />
+              <img src={p.image_url || '/images/diya.svg'} alt={p.name} className="w-full h-32 object-cover" />
               <div className="p-3"><p className="font-bold text-maroon-950 text-[15px] leading-snug">{p.name}</p><p className="text-xs text-stone-500 mt-0.5 flex items-center gap-1"><Clock size={12} /> {p.duration || 'Varies'}</p><p className="mt-1.5 text-sm font-bold text-saffron-700">from {inr(p.base_price)}</p></div>
             </Link>
           ))}
@@ -118,7 +118,7 @@ export default function Home() {
           <SectionTitle title="More Upcoming Events" />
           <div className="space-y-2.5">
             {upcoming.filter((u) => !nextEvent || u.id !== nextEvent.id).slice(0, 3).map((u) => (
-              <Link key={u.id} to="/upcoming"><Card className="p-3.5 flex items-center gap-3"><img src={u.image_url || '/images/marigold.jpg'} alt="" className="w-14 h-14 rounded-xl object-cover shrink-0" /><div className="flex-1 min-w-0"><p className="font-bold text-maroon-950 text-[15px] truncate">{u.title}</p><p className="text-xs text-stone-500 font-medium">{fmtDateTime(u.event_date)} &middot; {u.venue}</p><MiniCountdown target={u.event_date} /></div><span className="text-sm font-bold text-maroon-800 shrink-0">{inr(u.price)}</span></Card></Link>
+              <Link key={u.id} to="/upcoming"><Card className="p-3.5 flex items-center gap-3"><img src={u.image_url || '/images/marigold.svg'} alt="" className="w-14 h-14 rounded-xl object-cover shrink-0" /><div className="flex-1 min-w-0"><p className="font-bold text-maroon-950 text-[15px] truncate">{u.title}</p><p className="text-xs text-stone-500 font-medium">{fmtDateTime(u.event_date)} &middot; {u.venue}</p><MiniCountdown target={u.event_date} /></div><span className="text-sm font-bold text-maroon-800 shrink-0">{inr(u.price)}</span></Card></Link>
             ))}
           </div>
         </section>

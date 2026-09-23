@@ -16,7 +16,7 @@ export default function PackagesPage() {
   return (
     <div>
       <PageHeader title="Complete Puja Packages" subtitle="Verified purohit + full dashakarma kit in one booking" />
-      <div className="rounded-2xl overflow-hidden relative mb-4"><img src="/images/marigold.jpg" alt="" className="w-full h-36 sm:h-44 object-cover" /><div className="absolute inset-0 bg-gradient-to-r from-maroon-950/85 to-maroon-950/20 flex items-center"><p className="text-white font-display text-lg sm:text-2xl px-5 max-w-md leading-snug">One booking. Everything arranged - purohit, samagri & vidhi.</p></div></div>
+      <div className="rounded-2xl overflow-hidden relative mb-4"><img src="/images/marigold.svg" alt="" className="w-full h-36 sm:h-44 object-cover" /><div className="absolute inset-0 bg-gradient-to-r from-maroon-950/85 to-maroon-950/20 flex items-center"><p className="text-white font-display text-lg sm:text-2xl px-5 max-w-md leading-snug">One booking. Everything arranged - purohit, samagri & vidhi.</p></div></div>
       <div className="flex gap-2 mb-4">{['All', 'Basic', 'Standard', 'Premium'].map((t) => (<button key={t} onClick={() => setTier(t)} className={`flex-1 text-[13px] font-bold px-3 py-2.5 rounded-xl border ${tier === t ? 'bg-maroon-800 text-white border-maroon-800' : 'bg-white text-stone-600 border-stone-200'}`}>{t}</button>))}</div>
       {filtered.length === 0 ? <EmptyState title="No packages" subtitle="Try another tier." /> : (
         <div className="grid sm:grid-cols-2 gap-3">
