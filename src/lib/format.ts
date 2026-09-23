@@ -61,7 +61,9 @@ export function resizeImage(file: File, maxDim = 1200, quality = 0.82): Promise<
   });
 }
 export async function uploadPhoto(file: File, bucket = 'purohit-photos'): Promise<string> {
-  const { base64, contentType } = await resizeImage(file);
+  // High-quality source (1600px, JPEG q0.92); the server converts to WebP
+  // near-lossless (q90) before storing, and returns the .webp URL.
+  const { base64, contentType } = await resizeImage(file, 1600, 0.92);
   const base = file.name.replace(/\.[^.]+$/, '') || 'photo';
   const data = await apiSend('/api/upload', 'POST', { fileName: `${base}.jpg`, fileBase64: base64, contentType, bucket });
   return data.url as string;

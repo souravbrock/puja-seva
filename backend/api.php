@@ -263,10 +263,47 @@ if ($resource === 'upload' && $method === 'POST') {
     if ($bin === false || strlen($bin) > 8 * 1024 * 1024) json_out(400, ['error' => 'Invalid file (max 8 MB)']);
     $dir = rtrim((string) $config['upload_dir'], '/') . '/' . $bucket;
     if (!is_dir($dir) && !mkdir($dir, 0755, true)) json_out(500, ['error' => 'Upload dir unwritable']);
-    $safe = time() . '-' . preg_replace('/[^a-zA-Z0-9._-]/', '_', basename($fileName));
-    if (file_put_contents($dir . '/' . $safe, $bin) === false) json_out(500, ['error' => 'Write failed']);
+    $stem = preg_replace('/[^a-zA-Z0-9_-]/', '_', pathinfo(basename($fileName), PATHINFO_FILENAME));
+    if ($stem === '') $stem = 'photo';
+    $base = time() . '-' . $stem;
+    // Convert raster images to WebP near-lossless (q90, max 1600px, alpha kept).
+    $stored = null;
+    $mime = 'image/webp';
+    $im = @imagecreatefromstring($bin);
+    if ($im !== false) {
+        $w = imagesx($im);
+        $h = imagesy($im);
+        if ($w > 0 && $h > 0) {
+            $scale = min(1, 1600 / max($w, $h));
+            if ($scale < 1) {
+                $nw = (int) round($w * $scale);
+                $nh = (int) round($h * $scale);
+                $rs = imagecreatetruecolor($nw, $nh);
+                imagealphablending($rs, false);
+                imagesavealpha($rs, true);
+                imagecopyresampled($rs, $im, 0, 0, 0, 0, $nw, $nh, $w, $h);
+                imagedestroy($im);
+                $im = $rs;
+            } else {
+                imagealphablending($im, false);
+                imagesavealpha($im, true);
+            }
+            $safe = $base . '.webp';
+            if (@imagewebp($im, $dir . '/' . $safe, 90)) $stored = $safe;
+        }
+        if (is_resource($im) || $im instanceof \GdImage) imagedestroy($im);
+    }
+    if ($stored === null) {
+        // Non-raster input GD can't decode (e.g. SVG): store original bytes.
+        $ext = strtolower(pathinfo(basename($fileName), PATHINFO_EXTENSION));
+        if (!preg_match('/^[a-z0-9]{2,4}$/', $ext)) $ext = 'bin';
+        $safe = $base . '.' . $ext;
+        if (file_put_contents($dir . '/' . $safe, $bin) === false) json_out(500, ['error' => 'Write failed']);
+        $mime = (string) ($b['contentType'] ?? 'application/octet-stream');
+        $stored = $safe;
+    }
     unset($u); // authenticated above; uploads are user-scoped by token
-    json_out(200, ['url' => '/uploads/' . $bucket . '/' . $safe, 'path' => $safe]);
+    json_out(200, ['url' => '/uploads/' . $bucket . '/' . $stored, 'path' => $stored, 'contentType' => $mime]);
 }
 
 // ----- generic CRUD -----
