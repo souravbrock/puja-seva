@@ -41,8 +41,7 @@ jobs:
           java-version: 17
       - run: npm ci
       - run: npm run build
-      # Capacitor shell is generated in CI so the repo stays web-first.
-      - run: npm i -D @capacitor/cli @capacitor/core @capacitor/android && npx cap add android --web-dir dist || true
+      # android/ platform is committed; just sync the fresh web build into it.
       - run: npx cap sync android
       - working-directory: android
         run: chmod +x gradlew && ./gradlew assembleDebug --no-daemon

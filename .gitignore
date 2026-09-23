@@ -15,7 +15,6 @@ dist-ssr
 .env.*.local
 backend/config.local.php
 uploads/
-android/
 ios/
 gbps-*.apk
 gbps-web.zip
