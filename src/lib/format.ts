@@ -29,7 +29,9 @@ export const initials = (name: string | null | undefined): string => {
   if (!name) return '?';
   return name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
 };
-import { apiGet as get, apiSend as send } from './api';
+import { apiGet as get, apiSend as send, absUrl } from './api';
+
+export { absUrl };
 
 export async function apiGet(path: string) {
   return get(path);

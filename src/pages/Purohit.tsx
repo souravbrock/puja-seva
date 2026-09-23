@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BadgeCheck, Camera, Trash2, Plus, CalendarDays, Award, ImagePlus, CheckCircle2, Clock } from 'lucide-react';
-import { apiGet, apiSend, inr, fmtDateTime, uploadPhoto } from '../lib/format';
+import { apiGet, apiSend, inr, fmtDateTime, uploadPhoto, absUrl } from '../lib/format';
 import { useAuth } from '../contexts/AuthContext';
 import { useStore } from '../contexts/StoreContext';
 import { PageHeader } from '../components/layout';
@@ -102,7 +102,7 @@ export function PurohitRegisterPage() {
           <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
         </label>
         {errors.photos && <p className="text-sm font-semibold text-red-600">{errors.photos}</p>}
-        {photos.length > 0 && (<div className="grid grid-cols-4 gap-2">{photos.map((u, i) => (<div key={i} className="relative rounded-xl overflow-hidden aspect-square bg-stone-100"><img src={u} alt="" className="w-full h-full object-cover" /><button onClick={() => setPhotos((p) => p.filter((_, j) => j !== i))} className="absolute top-1 right-1 w-6 h-6 rounded-full bg-maroon-950/80 text-white flex items-center justify-center"><Trash2 size={12} /></button></div>))}</div>)}
+        {photos.length > 0 && (<div className="grid grid-cols-4 gap-2">{photos.map((u, i) => (<div key={i} className="relative rounded-xl overflow-hidden aspect-square bg-stone-100"><img src={absUrl(u)} alt="" className="w-full h-full object-cover" /><button onClick={() => setPhotos((p) => p.filter((_, j) => j !== i))} className="absolute top-1 right-1 w-6 h-6 rounded-full bg-maroon-950/80 text-white flex items-center justify-center"><Trash2 size={12} /></button></div>))}</div>)}
       </Card>
       {errors.submit && <p className="text-sm font-semibold text-red-600">{errors.submit}</p>}
       <Btn className="w-full" disabled={submitting || uploading} onClick={submit}>{submitting ? 'Submitting...' : 'Submit for Verification'}</Btn>
@@ -226,7 +226,7 @@ export function PurohitDashboardPage() {
           <ImagePlus size={19} className="text-saffron-600" /> {uploading ? 'Uploading...' : 'Bulk upload photos'}
           <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => bulkUpload(e.target.files)} />
         </label>
-        {photos.length > 0 && (<div className="grid grid-cols-3 sm:grid-cols-4 gap-2">{photos.map((u: string, i: number) => (<div key={i} className="relative rounded-xl overflow-hidden aspect-square bg-stone-100"><img src={u} alt="" className="w-full h-full object-cover" /><button onClick={() => removePhoto(u)} className="absolute top-1 right-1 w-6 h-6 rounded-full bg-maroon-950/80 text-white flex items-center justify-center"><Trash2 size={12} /></button></div>))}</div>)}
+        {photos.length > 0 && (<div className="grid grid-cols-3 sm:grid-cols-4 gap-2">{photos.map((u: string, i: number) => (<div key={i} className="relative rounded-xl overflow-hidden aspect-square bg-stone-100"><img src={absUrl(u)} alt="" className="w-full h-full object-cover" /><button onClick={() => removePhoto(u)} className="absolute top-1 right-1 w-6 h-6 rounded-full bg-maroon-950/80 text-white flex items-center justify-center"><Trash2 size={12} /></button></div>))}</div>)}
       </Card>
       <div>
         <h3 className="font-bold text-maroon-950 flex items-center gap-2 mb-2.5"><CalendarDays size={17} className="text-saffron-600" /> My assigned bookings</h3>

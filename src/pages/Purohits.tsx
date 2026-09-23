@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Search, BadgeCheck, Award, BookOpen, Camera, MapPin, ChevronRight } from 'lucide-react';
-import { apiGet, inr, initials } from '../lib/format';
+import { apiGet, inr, initials, absUrl } from '../lib/format';
 import { PageHeader } from '../components/layout';
 import { Card, Loader, EmptyState, Badge, Btn, Stars, SectionTitle } from '../components/ui';
 export function PurohitsPage() {
@@ -27,7 +27,7 @@ export function PurohitsPage() {
             return (
               <Link key={p.id} to={`/purohits/${p.id}`}><Card className="p-4 h-full">
                 <div className="flex gap-3">
-                  {photos.length > 0 ? <img src={photos[0]} alt="" className="w-16 h-16 rounded-2xl object-cover shrink-0" /> : (<div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-maroon-700 to-saffron-600 text-white font-display text-xl flex items-center justify-center shrink-0">{initials(p.full_name)}</div>)}
+                  {photos.length > 0 ? <img src={absUrl(photos[0])} alt="" className="w-16 h-16 rounded-2xl object-cover shrink-0" /> : (<div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-maroon-700 to-saffron-600 text-white font-display text-xl flex items-center justify-center shrink-0">{initials(p.full_name)}</div>)}
                   <div className="min-w-0"><p className="font-bold text-maroon-950 flex items-center gap-1">{p.full_name} <BadgeCheck size={15} className="text-emerald-600 shrink-0" /></p><p className="text-xs font-semibold text-saffron-700">{p.specialization}</p><p className="text-xs text-stone-500">{p.experience_years} years experience &middot; {p.completed_pujas || 0} pujas done</p></div>
                 </div>
                 <div className="flex items-center justify-between mt-3"><span className="flex items-center gap-1.5"><Stars value={Number(p.rating) || 5} size={13} /><span className="text-xs font-bold text-stone-500">{Number(p.rating || 5).toFixed(1)}</span></span><span className="text-sm font-bold text-maroon-800">{minFee !== null ? `from ${inr(minFee)}` : 'View pricing'}</span></div>
@@ -43,9 +43,11 @@ export function PurohitsPage() {
 export function PurohitDetailPage() {
   const { id } = useParams();
   const [p, setP] = useState<any>(null);
+  const [pujaNames, setPujaNames] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [lightbox, setLightbox] = useState<string | null>(null);
   useEffect(() => { apiGet(`/api/purohits?id=${id}`).then((d) => setP(d[0] || null)).catch(console.error).finally(() => setLoading(false)); }, [id]);
+  useEffect(() => { apiGet('/api/pujas').then((d) => { const m: Record<string, string> = {}; (d || []).forEach((x: any) => { m[String(x.id)] = x.name; }); setPujaNames(m); }).catch(console.error); }, []);
   if (loading) return <Loader />;
   if (!p) return <EmptyState title="Purohit not found" action={<Btn to="/purohits">Back</Btn>} />;
   const pricing = Array.isArray(p.pricing) ? p.pricing : [];
@@ -75,7 +77,7 @@ export function PurohitDetailPage() {
         {pricing.length === 0 ? <EmptyState title="Pricing on request" subtitle="Contact this purohit for a quote." /> : (
           <Card className="divide-y divide-stone-100 overflow-hidden">
             {pricing.map((r: any, i: number) => (
-              <div key={i} className="flex items-center justify-between gap-3 p-4"><span className="font-semibold text-maroon-950 text-[15px]">{r.puja_name}</span><div className="flex items-center gap-2"><span className="font-display text-lg text-maroon-900">{inr(r.price)}</span>{r.puja_id && <Link to={`/book?type=puja&pujaId=${r.puja_id}&purohitId=${p.id}`} className="text-[13px] font-bold bg-maroon-800 text-white rounded-lg px-3.5 py-1.5">Book</Link>}</div></div>
+              <div key={i} className="flex items-center justify-between gap-3 p-4"><span className="font-semibold text-maroon-950 text-[15px]">{r.puja_name || pujaNames[String(r.puja_id)] || 'Puja'}</span><div className="flex items-center gap-2"><span className="font-display text-lg text-maroon-900">{inr(r.price)}</span>{r.puja_id && <Link to={`/book?type=puja&pujaId=${r.puja_id}&purohitId=${p.id}`} className="text-[13px] font-bold bg-maroon-800 text-white rounded-lg px-3.5 py-1.5">Book</Link>}</div></div>
             ))}
           </Card>
         )}
@@ -83,11 +85,11 @@ export function PurohitDetailPage() {
       <div>
         <SectionTitle title="Puja Gallery" subtitle="Photos of the purohit performing rituals" />
         {photos.length === 0 ? (<Card className="p-6 text-center text-sm text-stone-400 font-medium"><Camera size={22} className="mx-auto mb-1.5" /> No photos uploaded yet</Card>) : (
-          <div className="grid grid-cols-3 gap-2">{photos.map((u: string, i: number) => (<button key={i} onClick={() => setLightbox(u)} className="rounded-xl overflow-hidden aspect-square bg-stone-100"><img src={u} alt="" className="w-full h-full object-cover" /></button>))}</div>
+          <div className="grid grid-cols-3 gap-2">{photos.map((u: string, i: number) => (<button key={i} onClick={() => setLightbox(u)} className="rounded-xl overflow-hidden aspect-square bg-stone-100"><img src={absUrl(u)} alt="" className="w-full h-full object-cover" /></button>))}</div>
         )}
       </div>
       <Btn to={`/book?type=puja&purohitId=${p.id}`} className="w-full" variant="secondary">Book {String(p.full_name).split(' ')[0]} for a Puja</Btn>
-      {lightbox && (<div className="fixed inset-0 z-[90] bg-maroon-950/90 flex items-center justify-center p-4" onClick={() => setLightbox(null)}><img src={lightbox} alt="" className="max-w-full max-h-[85vh] rounded-2xl" /></div>)}
+      {lightbox && (<div className="fixed inset-0 z-[90] bg-maroon-950/90 flex items-center justify-center p-4" onClick={() => setLightbox(null)}><img src={absUrl(lightbox)} alt="" className="max-w-full max-h-[85vh] rounded-2xl" /></div>)}
     </div>
   );
 }

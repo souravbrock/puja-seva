@@ -19,9 +19,9 @@ RepoType: git
 Repo: https://github.com/souravbrock/puja-seva.git
 
 Builds:
-  - versionName: '1.0.4'
-    versionCode: 5
-    commit: v1.0.4
+  - versionName: '1.0.5'
+    versionCode: 6
+    commit: v1.0.5
     subdir: .
     gradle:
       - assembleDebug
@@ -33,5 +33,5 @@ Builds:
 
 AutoUpdateMode: Version v%v
 UpdateCheckMode: Tags
-CurrentVersion: '1.0.4'
-CurrentVersionCode: 5
+CurrentVersion: '1.0.5'
+CurrentVersionCode: 6

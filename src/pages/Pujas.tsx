@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Search, Clock, BadgeCheck, ChevronRight, ListChecks, Users, Package } from 'lucide-react';
-import { apiGet, inr, initials } from '../lib/format';
+import { apiGet, inr, initials, absUrl } from '../lib/format';
 import { PageHeader } from '../components/layout';
 import { Card, Loader, EmptyState, Badge, Btn, Stars, Price, SectionTitle } from '../components/ui';
 import { useStore } from '../contexts/StoreContext';
@@ -19,7 +19,7 @@ export function PujasPage() {
       {filtered.length === 0 ? <EmptyState title="No pujas found" /> : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {filtered.map((p) => (
-            <Link key={p.id} to={`/pujas/${p.id}`}><Card className="overflow-hidden h-full"><img src={p.image_url || '/images/diya.svg'} alt={p.name} className="w-full h-40 object-cover" /><div className="p-4"><Badge tone="gold">{p.category}</Badge><h3 className="font-display text-lg text-maroon-950 mt-1.5 leading-snug">{p.name}</h3><p className="text-[13px] text-stone-500 mt-1" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.description}</p><div className="flex items-center justify-between mt-3"><span className="text-xs font-semibold text-stone-500 inline-flex items-center gap-1"><Clock size={13} /> {p.duration || 'Varies'}</span><span className="text-sm font-bold text-saffron-700">from {inr(p.base_price)}</span></div></div></Card></Link>
+            <Link key={p.id} to={`/pujas/${p.id}`}><Card className="overflow-hidden h-full"><img src={absUrl(p.image_url) || '/images/diya.svg'} alt={p.name} className="w-full h-40 object-cover" /><div className="p-4"><Badge tone="gold">{p.category}</Badge><h3 className="font-display text-lg text-maroon-950 mt-1.5 leading-snug">{p.name}</h3><p className="text-[13px] text-stone-500 mt-1" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.description}</p><div className="flex items-center justify-between mt-3"><span className="text-xs font-semibold text-stone-500 inline-flex items-center gap-1"><Clock size={13} /> {p.duration || 'Varies'}</span><span className="text-sm font-bold text-saffron-700">from {inr(p.base_price)}</span></div></div></Card></Link>
           ))}
         </div>
       )}
@@ -54,7 +54,7 @@ export function PujaDetailPage() {
     <div className="space-y-4">
       <PageHeader title={puja.name} subtitle={`${puja.category} - ${puja.duration || 'Flexible duration'}`} back />
       <Card className="overflow-hidden">
-        <img src={puja.image_url || '/images/havan.svg'} alt={puja.name} className="w-full h-52 sm:h-64 object-cover" />
+        <img src={absUrl(puja.image_url) || '/images/havan.svg'} alt={puja.name} className="w-full h-52 sm:h-64 object-cover" />
         <div className="p-4 sm:p-5">
           <p className="text-stone-600 text-[15px] leading-relaxed">{puja.description}</p>
           <div className="flex items-center justify-between mt-4 bg-cream rounded-2xl p-4 flex-wrap gap-2"><div><p className="text-xs font-bold uppercase tracking-wide text-stone-400">Base dakshina from</p><Price value={puja.base_price} className="text-2xl" /></div><Btn to={`/book?type=puja&pujaId=${puja.id}`}>Book this Puja</Btn></div>

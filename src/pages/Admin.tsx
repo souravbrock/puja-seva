@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LayoutDashboard, Users, ShoppingBag, ListChecks, ScrollText, Package, CalendarDays, ClipboardList, Truck, Plus, Pencil, Trash2, Check, X, Search, Eye, EyeOff, ImagePlus } from 'lucide-react';
-import { apiGet, apiSend, inr, fmtDateTime, uploadPhoto } from '../lib/format';
+import { apiGet, apiSend, inr, fmtDateTime, uploadPhoto, absUrl } from '../lib/format';
 import { useStore } from '../contexts/StoreContext';
 import { PageHeader } from '../components/layout';
 import { Card, Loader, EmptyState, Field, Input, TextArea, Select, Btn, Badge, StatusBadge, Modal, Stars } from '../components/ui';
@@ -36,7 +36,7 @@ function ImageField({ value, onChange, bucket }: { value: string; onChange: (url
   };
   return (
     <div className="space-y-2">
-      {value ? <img src={value} alt="" className="w-full h-36 object-cover rounded-xl border border-stone-200 bg-stone-100" /> : null}
+      {value ? <img src={absUrl(value)} alt="" className="w-full h-36 object-cover rounded-xl border border-stone-200 bg-stone-100" /> : null}
       <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="https://... or upload below" />
       <label className={`inline-flex items-center gap-2 text-[13px] font-bold rounded-xl px-4 py-2.5 border cursor-pointer ${busy ? 'bg-stone-100 text-stone-400 border-stone-200' : 'bg-saffron-50 text-saffron-800 border-saffron-200'}`}>
         <ImagePlus size={16} /> {busy ? 'Uploading...' : 'Upload photo'}

@@ -221,14 +221,6 @@ export default function AuthPage() {
             </button>
           </form>
         )}
-        <div className="mt-5 bg-cream rounded-xl p-3.5 text-xs text-stone-500 font-medium space-y-1">
-          <p className="font-bold text-maroon-900 text-[13px] flex items-center gap-1.5">
-            <Phone size={13} /> Demo accounts (OTP via server mail)
-          </p>
-          <p>Customer: demo@example.com</p>
-          <p>Purohit: purohit@example.com</p>
-          <p>Admin: souravbrock@gmail.com</p>
-        </div>
         <p className="text-center text-[13px] text-stone-500 mt-4 font-medium">
           Customer registration is this form itself — no separate step.{' '}
           Are you a purohit?{' '}

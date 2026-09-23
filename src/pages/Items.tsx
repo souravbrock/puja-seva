@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Search, ShoppingCart, ScrollText, Check } from 'lucide-react';
-import { apiGet, inr } from '../lib/format';
+import { apiGet, inr, absUrl } from '../lib/format';
 import { PageHeader } from '../components/layout';
 import { Card, Loader, EmptyState, Badge, Btn, ItemIcon, QtyStepper, Price, SectionTitle } from '../components/ui';
 import { useStore } from '../contexts/StoreContext';
@@ -25,7 +25,7 @@ export function ItemsPage() {
           {filtered.map((it) => (
             <Card key={it.id} className="overflow-hidden flex flex-col">
               <Link to={`/items/${it.id}`} className="block">
-                {it.image_url ? <img src={it.image_url} alt={it.name} className="w-full h-28 object-cover" /> : (<div className="h-28 bg-gradient-to-br from-maroon-100 via-gold-100 to-saffron-100 flex items-center justify-center text-maroon-700"><ItemIcon category={it.category} /></div>)}
+                {it.image_url ? <img src={absUrl(it.image_url)} alt={it.name} className="w-full h-28 object-cover" /> : (<div className="h-28 bg-gradient-to-br from-maroon-100 via-gold-100 to-saffron-100 flex items-center justify-center text-maroon-700"><ItemIcon category={it.category} /></div>)}
                 <div className="p-3 pb-1"><p className="text-[11px] font-bold uppercase tracking-wide text-saffron-700">{it.category}</p><p className="font-bold text-maroon-950 text-[15px] leading-snug">{it.name}</p>{it.name_hindi && <p className="text-xs text-stone-400 font-medium">{it.name_hindi}</p>}<div className="mt-1"><Price value={it.price} unit={it.unit} className="text-[15px]" /></div></div>
               </Link>
               <div className="p-3 pt-2 mt-auto"><button disabled={!it.in_stock} onClick={() => addToCart({ key: `item-${it.id}`, kind: 'item', refId: it.id, name: it.name, price: Number(it.price), unit: it.unit })} className="w-full text-[13px] font-bold bg-maroon-800 hover:bg-maroon-900 disabled:opacity-40 text-white rounded-xl py-2.5 inline-flex items-center justify-center gap-1.5"><ShoppingCart size={15} /> {it.in_stock ? 'Add to Cart' : 'Out of Stock'}</button></div>
@@ -59,7 +59,7 @@ export function ItemDetailPage() {
     <div className="space-y-4">
       <PageHeader title={item.name} subtitle={item.name_hindi || item.category} back />
       <Card className="overflow-hidden">
-        {item.image_url ? <img src={item.image_url} alt={item.name} className="w-full h-56 sm:h-72 object-cover" /> : (<div className="h-52 bg-gradient-to-br from-maroon-800 via-maroon-700 to-saffron-600 flex flex-col items-center justify-center text-white gap-2"><ItemIcon category={item.category} size={44} /><span className="font-display text-3xl">{item.name_hindi || item.name}</span></div>)}
+        {item.image_url ? <img src={absUrl(item.image_url)} alt={item.name} className="w-full h-56 sm:h-72 object-cover" /> : (<div className="h-52 bg-gradient-to-br from-maroon-800 via-maroon-700 to-saffron-600 flex flex-col items-center justify-center text-white gap-2"><ItemIcon category={item.category} size={44} /><span className="font-display text-3xl">{item.name_hindi || item.name}</span></div>)}
         <div className="p-4 sm:p-5">
           <div className="flex items-center gap-2 flex-wrap"><Badge tone="maroon">{item.category}</Badge>{item.in_stock ? <Badge tone="green"><Check size={11} /> In stock</Badge> : <Badge tone="red">Out of stock</Badge>}</div>
           <p className="text-stone-600 text-[15px] mt-3 leading-relaxed">{item.description || 'Pure, authentic samagri sourced for vedic rituals.'}</p>

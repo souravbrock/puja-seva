@@ -86,3 +86,12 @@ export async function fetchMe() {
 export function signOutLocal() {
   setToken(null);
 }
+
+// Server-stored uploads (/uploads/...) are absolute API URLs. Bundled art
+// (/images/...) stays relative so it resolves inside the APK offline bundle.
+export function absUrl(u: string | null | undefined): string {
+  if (!u) return '';
+  if (/^https?:\/\//i.test(u)) return u;
+  if (u.startsWith('/uploads/')) return `${API_BASE}${u}`;
+  return u;
+}
