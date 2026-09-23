@@ -44,8 +44,9 @@ jobs:
       # android/ platform is committed; just sync the fresh web build into it.
       - run: npx cap sync android
       # Stable release signature (same key every run, so updates install cleanly).
+      # Path must match android/app's project dir (see build.gradle).
       - name: Decode signing key
-        run: echo "${{ secrets.GBPS_KEYSTORE_B64 }}" | base64 -d > android/release.keystore
+        run: echo "${{ secrets.GBPS_KEYSTORE_B64 }}" | base64 -d > android/app/release.keystore
       - working-directory: android
         env:
           GBPS_KEYSTORE_FILE: release.keystore
