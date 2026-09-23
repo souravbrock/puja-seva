@@ -79,7 +79,7 @@ and `php -l api/index.php` should print "No syntax errors".
 1. Open `https://gbps.reddevils.co.in/` → homepage loads, no Supabase/Google calls.
 2. `/login` → enter email → receive OTP from `noreply@gbps.reddevils.co.in` → verify.
 3. Book a puja / place an order → rows appear in phpMyAdmin `bookings`/`orders`.
-4. Admin: log in as `admin@sevakendra.in` (request OTP for that address) → `/admin`.
+4. Admin: log in as `souravbrock@gmail.com` (request OTP for that address) → `/admin`.
 
 ## 8. Current blocker
 

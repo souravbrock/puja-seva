@@ -186,7 +186,7 @@ export default function AuthPage() {
           </p>
           <p>Customer: demo@example.com</p>
           <p>Purohit: purohit@example.com</p>
-          <p>Admin: admin@sevakendra.in</p>
+          <p>Admin: souravbrock@gmail.com</p>
         </div>
         <p className="text-center text-[13px] text-stone-500 mt-4 font-medium">
           Are you a purohit?{' '}

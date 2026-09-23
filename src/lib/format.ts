@@ -1,4 +1,4 @@
-export const ADMIN_EMAIL = 'admin@sevakendra.in';
+export const ADMIN_EMAIL = 'souravbrock@gmail.com';
 export const inr = (n: number | string | null | undefined): string => {
   const v = Number(n || 0);
   return '\u20B9' + v.toLocaleString('en-IN');

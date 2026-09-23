@@ -39,7 +39,7 @@ return [
     'smtp_pass' => $env('GBPS_SMTP_PASS', ''),
 
     // Emails that always get the admin role
-    'admin_emails' => ['admin@sevakendra.in'],
+    'admin_emails' => ['souravbrock@gmail.com'],
 
     // Uploads: stored under <docroot>/uploads (served directly)
     'upload_dir' => $env('GBPS_UPLOAD_DIR', __DIR__ . '/../uploads'),
