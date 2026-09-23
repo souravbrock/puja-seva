@@ -212,7 +212,7 @@ if ($resource === 'upload' && $method === 'POST') {
     if (!is_dir($dir) && !mkdir($dir, 0755, true)) json_out(500, ['error' => 'Upload dir unwritable']);
     $safe = time() . '-' . preg_replace('/[^a-zA-Z0-9._-]/', '_', basename($fileName));
     if (file_put_contents($dir . '/' . $safe, $bin) === false) json_out(500, ['error' => 'Write failed']);
-    void $u;
+    unset($u); // authenticated above; uploads are user-scoped by token
     json_out(200, ['url' => '/uploads/' . $bucket . '/' . $safe, 'path' => $safe]);
 }
 

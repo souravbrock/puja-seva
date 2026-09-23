@@ -9,7 +9,7 @@ SSL/TLS Certificates, SSH Access, File Manager, Git Version Control.
 ## 1. Create the subdomain (cPanel > Domains > Domains > Create)
 
 - Domain: `gbps.reddevils.co.in`
-- Document root: `/home/reddevil/gbps.reddevils.co.in` (cPanel default — keep it)
+- Document root: `/home/reddevil/public_html/gbps.reddevils.co.in` (cPanel default — keep it)
 - The steps below assume this path as `$REMOTE_DIR`.
 
 ## 2. HTTPS (cPanel > Security > SSL/TLS Certificates)
@@ -22,7 +22,7 @@ SSL/TLS Certificates, SSH Access, File Manager, Git Version Control.
 1. Create DB `reddevil_gbps` + user `reddevil_gbps` with a strong password.
 2. Grant ALL PRIVILEGES on `reddevil_gbps.*` to that user.
 3. cPanel > Databases > phpMyAdmin > select `reddevil_gbps` > Import > `backend/schema.sql` > Go.
-4. Confirm 11 tables: users, otp_codes, sessions, profiles, purohits, pujas,
+4. Confirm 12 tables: users, otp_codes, sessions, profiles, purohits, pujas,
    packages, puja_lists, dashakarma_items, upcoming_pujas, bookings, orders.
 
 ## 4. Email for OTP (cPanel > Email > Email Accounts)
@@ -58,7 +58,7 @@ Option C — manual File Manager upload:
 
 ## 6. Server config (one file, never in git)
 
-Create `/home/reddevil/gbps.reddevils.co.in/api/config.local.php`:
+Create `/home/reddevil/public_html/gbps.reddevils.co.in/api/config.local.php`:
 ```php
 <?php
 return [

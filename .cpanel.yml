@@ -1,7 +1,7 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/reddevil/gbps.reddevils.co.in/
+    - export DEPLOYPATH=/home/reddevil/public_html/gbps.reddevils.co.in/
     - /bin/cp -r dist/* $DEPLOYPATH/
     - /bin/cp backend/api.php $DEPLOYPATH/api/index.php
     - /bin/cp backend/htaccess-api.txt $DEPLOYPATH/api/.htaccess

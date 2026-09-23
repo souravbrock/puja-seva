@@ -9,7 +9,7 @@ set -euo pipefail
 HOST="${CPANEL_HOST:-kaveri.domainadda.com}"
 USER="${CPANEL_USER:-reddevil}"
 KEY="${SSH_KEY:-$HOME/.ssh/cpanel-deploy}"
-REMOTE_DIR="${CPANEL_DIR:-/home/reddevil/gbps.reddevils.co.in}"
+REMOTE_DIR="${CPANEL_DIR:-/home/reddevil/public_html/gbps.reddevils.co.in}"
 
 if [ ! -f "$KEY" ]; then
   echo "SSH key not found: $KEY (set SSH_KEY=...)" >&2
